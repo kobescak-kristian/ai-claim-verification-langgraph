@@ -149,8 +149,8 @@ but expires ~14 days after the run under free-tier retention
 
 The framework did not make the agent smaller — it made the
 enforcement explicit. Measured on the agent layer alone
-(`agent/*.py`, tests and eval assets excluded): 501 lines in the
-origin, 577 in this port — 15% more. The files the framework was
+(`agent/*.py`, tests and eval assets excluded, re-measured
+2026-07-24): 509 lines in the origin, 585 in this port — 15% more. The files the framework was
 supposed to slim did shrink: `audit.py` by 32 lines and `tools.py`
 by 37, exactly where cage logic moved out of them. But that logic
 landed in `middleware.py` — 129 lines with no origin equivalent —
@@ -162,3 +162,9 @@ the framework — is what makes the cage trustworthy in both
 implementations. That is the durable lesson: frameworks relocate
 enforcement; they don't remove the obligation to prove it — and
 here, relocation cost lines rather than saving them.
+
+*Line counts re-measured 2026-07-24 after a cross-OS portability fix
+landed in both repos' path resolver (backslash paths now rejected on
+every OS, +8 lines each side — the 76-line gap is unchanged). The fix
+touches path validation only: claim-verification logic is untouched in
+both implementations, and the 1.00/1.00 eval parity result stands.*

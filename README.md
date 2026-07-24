@@ -46,7 +46,7 @@ Eval artifacts (dataset, ground truth, eval config, scorer) are copied verbatim 
 
 12 cases / 35 claims, $0.6332 total run cost, no case hit the turn cap or the budget ceiling. Trace archive: [`evals/traces/p3_official_2026-07-20/`](evals/traces/p3_official_2026-07-20/).
 
-Harness-layer code size, measured on `agent/*.py` alone (tests and eval assets excluded): **501 lines in the origin, 577 in this port — 15% more, not less.** The framework relocated cage enforcement into an explicit middleware layer; it didn't shrink the agent. Full breakdown in [`COMPARISON.md`](COMPARISON.md#what-id-tell-you-in-an-interview).
+Harness-layer code size, measured on `agent/*.py` alone (tests and eval assets excluded, re-measured 2026-07-24): **509 lines in the origin, 585 in this port — 15% more, not less.** The framework relocated cage enforcement into an explicit middleware layer; it didn't shrink the agent. Full breakdown in [`COMPARISON.md`](COMPARISON.md#what-id-tell-you-in-an-interview).
 
 ## Run It Yourself
 
