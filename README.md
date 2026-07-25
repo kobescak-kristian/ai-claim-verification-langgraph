@@ -1,5 +1,7 @@
 # ai-claim-verification-langgraph
 
+[![CI](https://github.com/kobescak-kristian/ai-claim-verification-langgraph/actions/workflows/ci.yml/badge.svg)](https://github.com/kobescak-kristian/ai-claim-verification-langgraph/actions/workflows/ci.yml)
+
 A LangGraph port of [ai-claim-verification-agent](https://github.com/kobescak-kristian/ai-claim-verification-agent) — the same bounded claim-verification agent, rebuilt on LangChain v1 / LangGraph's `create_agent`, facing the identical frozen eval the origin already passed. One variable changes: the framework.
 
 **Parity result: precision 1.00 / recall 1.00 — Sonnet 4.6, official run 2026-07-20**, identical to the origin's gate (12 cases / 35 synthetic claims, $0.63 total run cost). Full per-case results: [`evals/parity_run_2026-07-20.md`](evals/parity_run_2026-07-20.md).
@@ -58,7 +60,7 @@ pip install -r requirements.txt
 
 Copy `.env.example` to `.env` and set `ANTHROPIC_API_KEY` (this port bills via a per-token API key, not Claude subscription auth — a deliberate difference from the origin, noted in [`COMPARISON.md`](COMPARISON.md#what-the-framework-cannot-enforce)). LangSmith variables are optional; tracing stays off (`LANGSMITH_TRACING=false`) unless you're reproducing the traced parity run yourself.
 
-**Bounds suite** — 21 tests, no prior run and no API key needed:
+**Bounds suite** — 21 tests, no prior run and no API key needed. Runs in CI on every push — Ubuntu, macOS and Windows, Python 3.12 and 3.14:
 
 ```bash
 pytest tests/test_bounds.py -v
