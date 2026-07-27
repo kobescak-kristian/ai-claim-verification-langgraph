@@ -32,6 +32,12 @@ prediction (2026-07-18): whitelist and turn cap could live
 in-framework; budget, circuit breaker, and audit could not,
 "because the framework offers no primitive for them."
 
+*Correction (2026-07-27): `decisions/0001` Decision 4 opens "The four
+cage properties" and then lists five; five is correct, as counted here
+and in the README. The repo's SPEC groups the five properties into
+four components (budget ceiling + circuit breaker as one), the likely
+source of the miscount. The pre-registration file is left unedited.*
+
 | Component | Predicted locus | Actual locus | Prediction |
 |---|---|---|---|
 | Tool whitelist | in-framework | in-framework | held |
