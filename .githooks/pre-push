@@ -6,5 +6,4 @@ elif ! git merge-base --is-ancestor origin/main HEAD; then
   echo "PRE-PUSH BLOCK: origin/main is not an ancestor of HEAD — stale base. Fetch/rebase, then retry."
   exit 1
 fi
-# artifact-validator call not installed in this repo
-# python .githooks/validate_artifacts.py .
+python .githooks/validate_artifacts.py . || exit 1
