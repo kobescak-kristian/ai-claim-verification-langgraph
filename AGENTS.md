@@ -44,7 +44,6 @@ Each topic has one owning source:
 
 | Source | Owns |
 |---|---|
-| `SPEC.md` | The experiment and port contract: scope, intended cage translation, the definition of eval parity, declared limits and out-of-scope areas |
 | `README.md` | Public description, usage, limitations, outcome summary and Version Log |
 | `COMPARISON.md` | Framework-comparison conclusions and the interpretation of what the framework gives, hides and cannot enforce |
 | `decisions/0001-port-target-and-parity-contract.md` | Original port target, the pre-registered cage-translation contract and the frozen eval-parity contract |
@@ -68,8 +67,8 @@ When sources disagree:
 
 - A later accepted decision record supersedes an earlier prediction where
   it explicitly records a tested correction.
-- `SPEC.md` defines the experiment contract, but accepted decision records
-  may document corrections discovered during implementation.
+- The accepted decision records define the experiment contract, and a later
+  one may document corrections discovered during implementation.
 - Source and config state current runtime behaviour.
 - `evals/eval_config.yaml` and `evals/ground_truth.json` own the ruler.
 - Committed run records state observations.
@@ -84,7 +83,7 @@ When sources disagree:
 
 | Task | Go to |
 |---|---|
-| Experiment and port contract, scope, declared limits | `SPEC.md` |
+| Experiment and port contract, scope, declared limits | `decisions/0001-port-target-and-parity-contract.md`, `decisions/0002-p1-technical-rulings.md` |
 | Public description, usage, limitations, version history | `README.md` |
 | Framework comparison: gives / hides / cannot enforce | `COMPARISON.md` |
 | Port target and frozen parity contract | `decisions/0001-port-target-and-parity-contract.md` |

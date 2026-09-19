@@ -5,8 +5,8 @@ DATASET_ROOT = (REPO_ROOT / "evals" / "dataset").resolve()
 EVAL_CONFIG_PATH = REPO_ROOT / "evals" / "eval_config.yaml"
 AUDIT_DB_PATH = REPO_ROOT / "audit.db"
 
-MODEL = "anthropic:claude-haiku-4-5-20251001"  # dev iterations (locked models decision, SPEC.md)
-EVAL_MODEL = "anthropic:claude-sonnet-4-6"  # eval + demo runs (locked models decision, SPEC.md)
+MODEL = "anthropic:claude-haiku-4-5-20251001"  # dev iterations (locked models decision)
+EVAL_MODEL = "anthropic:claude-sonnet-4-6"  # eval + demo runs (locked models decision)
 
 MAX_TURNS = 20  # ModelCallLimitMiddleware run_limit (decisions/0002 Ruling 1)
 RECURSION_LIMIT = 43  # secondary fail-closed backstop on graph supersteps (2 * MAX_TURNS + 3)
