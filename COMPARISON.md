@@ -34,9 +34,18 @@ in-framework; budget, circuit breaker, and audit could not,
 
 *Correction (2026-07-27): `decisions/0001` Decision 4 opens "The four
 cage properties" and then lists five; five is correct, as counted here
-and in the README. The repo's SPEC groups the five properties into
-four components (budget ceiling + circuit breaker as one), the likely
-source of the miscount. The pre-registration file is left unedited.*
+and in the README. The repo's root spec grouped the five properties
+into four components (budget ceiling + circuit breaker as one), the
+likely source of the miscount. The pre-registration file is left
+unedited.*
+
+*Note on sources (2026-10-12): this document and `decisions/0002-0003`
+argue against a root `SPEC.md` that was retired on 2026-09-19 as a
+redundant second contract. The pre-registration those arguments are
+measured against — the cage-translation contract and the eval-parity
+contract — is `decisions/0001`, which is unchanged and still in the
+repo. The retired file remains readable in git history at `f25a66d`
+for anyone checking the original wording.*
 
 | Component | Predicted locus | Actual locus | Prediction |
 |---|---|---|---|
