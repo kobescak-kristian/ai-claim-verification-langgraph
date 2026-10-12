@@ -13,6 +13,14 @@ framework.
 to the origin (official run of 2026-07-20, $0.63 total; per-case
 results in [`evals/parity_run_2026-07-20.md`](evals/parity_run_2026-07-20.md)).**
 
+**Re-run with neutral case names, 2026-10-13.** Until then, 8 of the 12 eval case
+directory names contained a verdict word (`supported`, `contradicted` or
+`unverifiable`) that reached the model in both implementations. Both re-ran the
+frozen eval with neutral names (`case_01` to `case_12`), same scorer, thresholds and
+model: precision 1.00 / recall 1.00 (35/35) in each
+([port](evals/rerun_2026-10-13.md), [origin](https://github.com/kobescak-kristian/ai-claim-verification-agent/blob/main/evals/rerun_2026-10-13.md)).
+Parity holds without the hint. The cases remain synthetic.
+
 Parity at identical scores means the framework neither improved nor
 degraded the outcome. That is the finding, not a disappointment: the
 interesting differences are all in *enforcement* — what the framework

@@ -6,6 +6,8 @@ A LangGraph port of [ai-claim-verification-agent](https://github.com/kobescak-kr
 
 **Parity result: precision 1.00 / recall 1.00 — Sonnet 4.6, official run 2026-07-20**, identical to the origin's gate (12 cases / 35 synthetic claims, $0.63 total run cost). Full per-case results: [`evals/parity_run_2026-07-20.md`](evals/parity_run_2026-07-20.md).
 
+**Re-run with neutral case names, 2026-10-13: precision 1.00 / recall 1.00 (35/35), $0.61.** Until 2026-10-13, 8 of the 12 eval case directory names contained a verdict word (`supported`, `contradicted` or `unverifiable`) that reached the model. The re-run uses neutral names (`case_01` to `case_12`) with the same scorer, thresholds and model, and the origin's re-run scored the same. The cases remain synthetic. Record: [`evals/rerun_2026-10-13.md`](evals/rerun_2026-10-13.md).
+
 **Synthetic, labeled data by design. This system has not been deployed and carries no production or availability claim.** The eval proves the harness and the ported cage hold against controlled, known-truth claims — it does not prove behavior on live web content.
 
 **→ [`COMPARISON.md`](COMPARISON.md): what the framework gives, what it hides, what it cannot enforce — the actual deliverable of this port.**
@@ -86,6 +88,8 @@ Eval artifacts (dataset, ground truth, eval config, scorer) are copied verbatim 
 
 12 cases / 35 claims, $0.6332 total run cost, no case hit the turn cap or the budget ceiling. Trace archive: [`evals/traces/p3_official_2026-07-20/`](evals/traces/p3_official_2026-07-20/).
 
+Re-run with neutral case directory names, 2026-10-13 ([record](evals/rerun_2026-10-13.md)): precision 1.0000 (8/8), recall 1.0000 (8/8), 35/35, $0.6139 total, none capped, tracing off.
+
 Harness-layer code size, measured on `agent/*.py` alone (tests and eval assets excluded, re-measured 2026-07-24): **509 lines in the origin, 585 in this port — 15% more, not less.** The framework relocated cage enforcement into an explicit middleware layer; it didn't shrink the agent. Full breakdown in [`COMPARISON.md`](COMPARISON.md#what-id-tell-you-in-an-interview).
 
 ## Run It Yourself
@@ -125,3 +129,4 @@ python evals/run_parity.py --model sonnet --all --trace --export-traces evals/tr
 | P2 | 2026-07-20 | Full behavioral port (system prompt, verdict definitions, comparison policy — byte-identical to origin); demo case spanning all three verdicts correct; 12-case dev sweep on Haiku, 12/12. |
 | P3 | 2026-07-20 | Official eval-parity run: Sonnet 4.6, precision 1.00 / recall 1.00 (`decisions/0003`); trace archive committed. |
 | P4 | 2026-07-20 | Comparison writeup (`COMPARISON.md`), README rework, public flip. |
+| Re-run | 2026-10-13 | Eval case directories renamed to neutral `case_01` to `case_12` (8 of 12 old names contained a verdict word that reached the model); bounds test added for verdict words in dataset names; frozen eval re-run: precision 1.00 / recall 1.00, 35/35. |
