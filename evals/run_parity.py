@@ -17,7 +17,7 @@ No feedback is attached to any trace by this script (decisions/0003
 Ruling 3).
 
 Usage:
-    python evals/run_parity.py --model haiku --case case_01_... --trace
+    python evals/run_parity.py --model haiku --case case_01 --trace
     python evals/run_parity.py --model sonnet --all --trace \
         --export-traces evals/traces/p3_official_2026-07-20
 """
