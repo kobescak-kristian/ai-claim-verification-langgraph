@@ -188,7 +188,7 @@ class TestAuditBeforeUse:
         assumed from the middleware's source order."""
         result = call_through_middleware(
             "fetch_page",
-            {"path": "case_01_supported_wireless_earbuds/target.html"},
+            {"path": "case_01/target.html"},
             run_id="bounds-test",
             case_id="audit-order",
         )
@@ -211,7 +211,7 @@ class TestAuditBeforeUse:
         wrappers._call_count = MAX_TOOL_CALLS  # force the next call to trip
         result = call_through_middleware(
             "fetch_page",
-            {"path": "case_01_supported_wireless_earbuds/target.html"},
+            {"path": "case_01/target.html"},
             run_id="bounds-test",
             case_id="audit-denial",
         )
@@ -237,7 +237,7 @@ class TestCapsEnforced:
         for _ in range(MAX_TOOL_CALLS + 1):
             last_result = call_through_middleware(
                 "fetch_page",
-                {"path": "case_01_supported_wireless_earbuds/target.html"},
+                {"path": "case_01/target.html"},
                 run_id="bounds-test",
                 case_id="circuit-breaker",
             )
@@ -250,7 +250,7 @@ class TestCapsEnforced:
         wrappers._cost_usd = 1.0  # simulate cost already over the ceiling
         result = call_through_middleware(
             "fetch_page",
-            {"path": "case_01_supported_wireless_earbuds/target.html"},
+            {"path": "case_01/target.html"},
             run_id="bounds-test",
             case_id="budget-ceiling",
         )
@@ -288,3 +288,22 @@ class TestGroundTruthNotLeaked:
                     f"row {row['id']}: ground_truth.json content leaked into "
                     f"audit payload: {secret!r}"
                 )
+
+
+class TestDatasetNamesCarryNoVerdict:
+    def test_no_dataset_path_component_names_a_verdict(self):
+        """No directory or file name under evals/dataset/ contains a verdict
+        word. Case paths reach the model in the user prompt and in the
+        fetch_page tool description, so a directory name
+        that carries a verdict word hints at the expected verdict.
+        Checks names only: page text such as "HDR10 supported." is product
+        content, not a hint."""
+        verdict_tokens = ("supported", "contradicted", "unverifiable")
+        names = list(DATASET_ROOT.rglob("*"))
+        assert names, "evals/dataset/ is empty"
+        offenders = sorted(
+            p.relative_to(DATASET_ROOT).as_posix()
+            for p in names
+            if any(t in p.name.lower() for t in verdict_tokens)
+        )
+        assert not offenders, f"dataset names carry a verdict word: {offenders}"
