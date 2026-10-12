@@ -22,6 +22,44 @@ Same target/source page model, same four read-only tools (`fetch_page`, `extract
 
 ## System
 
+```mermaid
+flowchart TB
+    RUN["run_case.py / evals/run_parity.py<br/>one fresh invocation per case"]
+
+    subgraph FW["Framework side — create_agent graph"]
+        MCL["ModelCallLimitMiddleware<br/>primary turn-like bound, fails closed"]
+        MODEL["Model"]
+        RL["recursion_limit<br/>secondary superstep backstop"]
+    end
+
+    subgraph WRAP["Wrapper side — agent/middleware.py, hand-built"]
+        COST["track_cost<br/>USD accounting per model call"]
+        GATE["audited_bounded_tool_call<br/>pre-audit row, then call-count breaker,<br/>then budget ceiling, then tool or denial,<br/>then post-audit row"]
+    end
+
+    subgraph WL["Model-accessible whitelist — agent/tools.py"]
+        TOOLS["fetch_page, extract_claims,<br/>compare_source, log_finding"]
+    end
+
+    PAGES["agent/pages.py<br/>path containment: evals/dataset/ only"]
+    DB["audit.db<br/>local SQLite audit trail"]
+    OUT["Verdict report<br/>SUPPORTED / CONTRADICTED / UNVERIFIABLE"]
+
+    RUN --> MCL
+    MCL --> MODEL
+    RL -.-> MODEL
+    MODEL --> COST
+    MODEL -->|tool call| GATE
+    GATE -->|allowed| TOOLS
+    GATE -->|ceiling tripped, denial| MODEL
+    GATE --> DB
+    TOOLS --> PAGES
+    TOOLS -->|result| MODEL
+    MODEL --> OUT
+```
+
+The split in that diagram is the finding, not an implementation detail. The framework carries the tool whitelist, the model-call cap and the hook point where auditing attaches; the USD ceiling and the call-count breaker are hand-built in the wrapper layer because no framework primitive exists for them. Every tool call the model makes passes through the wrapper gate, which writes an audit row before the tool runs or is denied. [`COMPARISON.md`](COMPARISON.md#the-cage-component-by-component) argues what that split means.
+
 ### The Cage — translated, not assumed
 
 Five bounds carry over from the origin. Two are pre-registered as testable predictions in [`decisions/0001`](decisions/0001-port-target-and-parity-contract.md), settled with the installed framework in [`decisions/0002`](decisions/0002-p1-technical-rulings.md), and their locus is reported in [`COMPARISON.md`](COMPARISON.md#the-cage-component-by-component) — one prediction held, two were falsified by primitives that turned out to exist:
