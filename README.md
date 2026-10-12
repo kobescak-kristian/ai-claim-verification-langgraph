@@ -98,7 +98,7 @@ pip install -r requirements.txt
 
 Copy `.env.example` to `.env` and set `ANTHROPIC_API_KEY` (this port bills via a per-token API key, not Claude subscription auth — a deliberate difference from the origin, noted in [`COMPARISON.md`](COMPARISON.md#what-the-framework-cannot-enforce)). LangSmith variables are optional; tracing stays off (`LANGSMITH_TRACING=false`) unless you're reproducing the traced parity run yourself.
 
-**Bounds suite** — 21 tests, no prior run and no API key needed. Runs in CI on every push — Ubuntu, macOS and Windows, Python 3.12 and 3.14:
+**Bounds suite** — 22 tests, no prior run and no API key needed. Runs in CI on every push — Ubuntu, macOS and Windows, Python 3.12 and 3.14:
 
 ```bash
 pytest tests/test_bounds.py -v
@@ -107,7 +107,7 @@ pytest tests/test_bounds.py -v
 **Single-case demo** (calls the API):
 
 ```bash
-python run_case.py case_09_mixed_multi_claim_router
+python run_case.py case_09
 ```
 
 **Full parity run** (all 12 cases / 35 claims, tracing on, exports a trace archive — calls the API):

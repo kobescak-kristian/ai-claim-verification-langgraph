@@ -31,7 +31,7 @@ def reset_run_state() -> None:
     "fetch_page",
     description=(
         "Fetch a local HTML page by path relative to evals/dataset/ (e.g. "
-        "'case_01_supported_wireless_earbuds/target.html'). Returns the page "
+        "'case_01/target.html'). Returns the page "
         "title and its paragraphs. Rejects any path outside evals/dataset/."
     ),
 )
