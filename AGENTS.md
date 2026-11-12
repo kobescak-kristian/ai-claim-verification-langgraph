@@ -38,6 +38,8 @@ result exports produced by an explicitly invoked evaluation run — are
 distinct from the model-accessible tool surface and are not actions the
 model can choose.
 
+Classification: EXPERIMENT.
+
 ## Authority and conflict handling
 
 Each topic has one owning source:
