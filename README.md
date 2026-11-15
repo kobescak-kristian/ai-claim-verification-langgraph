@@ -2,6 +2,10 @@
 
 [![CI](https://github.com/kobescak-kristian/ai-claim-verification-langgraph/actions/workflows/ci.yml/badge.svg)](https://github.com/kobescak-kristian/ai-claim-verification-langgraph/actions/workflows/ci.yml)
 
+LangGraph port of a bounded claim-verification agent, tested on the same frozen eval as the original.
+
+**Status:** Built, 2026-10-13. Parity eval passed; not deployed.
+
 A LangGraph port of [ai-claim-verification-agent](https://github.com/kobescak-kristian/ai-claim-verification-agent) — the same bounded claim-verification agent, rebuilt on LangChain v1 / LangGraph's `create_agent`, facing the identical frozen eval the origin already passed. One variable changes: the framework.
 
 **Parity result: precision 1.00 / recall 1.00 — Sonnet 4.6, official run 2026-07-20**, identical to the origin's gate (12 cases / 35 synthetic claims, $0.63 total run cost). Full per-case results: [`evals/parity_run_2026-07-20.md`](evals/parity_run_2026-07-20.md).
@@ -21,6 +25,22 @@ This repo asks a narrower, second question: if you rebuild the same bounded agen
 ## Solution
 
 Same target/source page model, same four read-only tools (`fetch_page`, `extract_claims`, `compare_source`, `log_finding`), same verdict set (SUPPORTED / CONTRADICTED / UNVERIFIABLE), same comparison policy loaded at runtime from [`evals/eval_config.yaml`](evals/eval_config.yaml) — ported, not rewritten. The agent is built with LangChain v1's `create_agent`; a manual `StateGraph` was never needed because no cage property required dropping below the framework.
+
+## Outcome
+
+**Official parity run — Sonnet 4.6, 2026-07-20** ([full report](evals/parity_run_2026-07-20.md)):
+
+| Metric | Value | Threshold | Result |
+|---|---|---|---|
+| Precision (positive class: CONTRADICTED) | 1.0000 (8/8) | ≥ 0.95 | PASS |
+| Recall (positive class: CONTRADICTED) | 1.0000 (8/8) | ≥ 0.90 | PASS |
+| Overall verdict accuracy (secondary, not gated) | 1.0000 (35/35) | — | — |
+
+12 cases / 35 claims, $0.6332 total run cost, no case hit the turn cap or the budget ceiling. Trace archive: [`evals/traces/p3_official_2026-07-20/`](evals/traces/p3_official_2026-07-20/).
+
+Re-run with neutral case directory names, 2026-10-13 ([record](evals/rerun_2026-10-13.md)): precision 1.0000 (8/8), recall 1.0000 (8/8), 35/35, $0.6139 total, none capped, tracing off.
+
+Harness-layer code size, measured on `agent/*.py` alone (tests and eval assets excluded, re-measured 2026-07-24): **509 lines in the origin, 585 in this port — 15% more, not less.** The framework relocated cage enforcement into an explicit middleware layer; it didn't shrink the agent. Full breakdown in [`COMPARISON.md`](COMPARISON.md#what-id-tell-you-in-an-interview).
 
 ## System
 
@@ -76,22 +96,6 @@ Five bounds carry over from the origin. Two are pre-registered as testable predi
 
 Eval artifacts (dataset, ground truth, eval config, scorer) are copied verbatim from the origin — zero changes. LangSmith observes via trace export; it never scores. See [`decisions/0003`](decisions/0003-p3-trace-archive-and-run-protocol.md) for why a committed JSON export, not a dashboard link, is the archive: Developer-tier traces expire from the UI/API in ~14 days.
 
-## Outcome
-
-**Official parity run — Sonnet 4.6, 2026-07-20** ([full report](evals/parity_run_2026-07-20.md)):
-
-| Metric | Value | Threshold | Result |
-|---|---|---|---|
-| Precision (positive class: CONTRADICTED) | 1.0000 (8/8) | ≥ 0.95 | PASS |
-| Recall (positive class: CONTRADICTED) | 1.0000 (8/8) | ≥ 0.90 | PASS |
-| Overall verdict accuracy (secondary, not gated) | 1.0000 (35/35) | — | — |
-
-12 cases / 35 claims, $0.6332 total run cost, no case hit the turn cap or the budget ceiling. Trace archive: [`evals/traces/p3_official_2026-07-20/`](evals/traces/p3_official_2026-07-20/).
-
-Re-run with neutral case directory names, 2026-10-13 ([record](evals/rerun_2026-10-13.md)): precision 1.0000 (8/8), recall 1.0000 (8/8), 35/35, $0.6139 total, none capped, tracing off.
-
-Harness-layer code size, measured on `agent/*.py` alone (tests and eval assets excluded, re-measured 2026-07-24): **509 lines in the origin, 585 in this port — 15% more, not less.** The framework relocated cage enforcement into an explicit middleware layer; it didn't shrink the agent. Full breakdown in [`COMPARISON.md`](COMPARISON.md#what-id-tell-you-in-an-interview).
-
 ## Run It Yourself
 
 ```bash
@@ -120,13 +124,26 @@ python run_case.py case_09
 python evals/run_parity.py --model sonnet --all --trace --export-traces evals/traces/<dated-dir>
 ```
 
+## Limitations
+
+- The eval uses labeled synthetic pages by design. It does not prove behavior on live web content.
+- Not deployed; no production or availability claim.
+- Parity was measured on one task family, one dataset and one model pair. It is not a general claim about either framework.
+- Live runs need a per-token Anthropic API key (`ANTHROPIC_API_KEY`).
+
+More detail: [`COMPARISON.md`](COMPARISON.md#honest-limits-of-this-comparison).
+
 ## Version Log
 
 | Version | Date | Change |
 |---|---|---|
-| P0 | 2026-07-18 | Spec + `decisions/0001` (port target, cage-translation contract, eval-parity contract) committed before any agent code. |
-| P1 | 2026-07-20 | Scaffold: `create_agent` graph, 4 tools, cage (`decisions/0002`), bounds suite ported and green, one Haiku smoke case within cap. |
-| P2 | 2026-07-20 | Full behavioral port (system prompt, verdict definitions, comparison policy — byte-identical to origin); demo case spanning all three verdicts correct; 12-case dev sweep on Haiku, 12/12. |
-| P3 | 2026-07-20 | Official eval-parity run: Sonnet 4.6, precision 1.00 / recall 1.00 (`decisions/0003`); trace archive committed. |
-| P4 | 2026-07-20 | Comparison writeup (`COMPARISON.md`), README rework, public flip. |
 | Re-run | 2026-10-13 | Eval case directories renamed to neutral `case_01` to `case_12` (8 of 12 old names contained a verdict word that reached the model); bounds test added for verdict words in dataset names; frozen eval re-run: precision 1.00 / recall 1.00, 35/35. |
+| P4 | 2026-07-20 | Comparison writeup (`COMPARISON.md`), README rework, public flip. |
+| P3 | 2026-07-20 | Official eval-parity run: Sonnet 4.6, precision 1.00 / recall 1.00 (`decisions/0003`); trace archive committed. |
+| P2 | 2026-07-20 | Full behavioral port (system prompt, verdict definitions, comparison policy — byte-identical to origin); demo case spanning all three verdicts correct; 12-case dev sweep on Haiku, 12/12. |
+| P1 | 2026-07-20 | Scaffold: `create_agent` graph, 4 tools, cage (`decisions/0002`), bounds suite ported and green, one Haiku smoke case within cap. |
+| P0 | 2026-07-18 | Spec + `decisions/0001` (port target, cage-translation contract, eval-parity contract) committed before any agent code. |
+
+## License
+
+Apache License 2.0. See [LICENSE](LICENSE).
